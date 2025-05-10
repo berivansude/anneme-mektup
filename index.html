@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <title>Anneme Mektup</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      background: #ffe6f0;
+      overflow: hidden;
+      font-family: 'Georgia', serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      flex-direction: column; /* İçeriği dikey olarak ortalamak için */
+      text-align: center; /* Yazının ortalanması için */
+    }
+
+    /* Kalplerin arka plan animasyonu */
+    .heart {
+      position: fixed;
+      top: -10px;
+      width: 20px;
+      height: 20px;
+      background-color: pink;
+      transform: rotate(45deg);
+      animation: float 8s linear infinite;
+      opacity: 0.6;
+      z-index: 0;
+    }
+
+    .heart::before,
+    .heart::after {
+      content: '';
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background-color: pink;
+      border-radius: 50%;
+    }
+
+    .heart::before {
+      top: -10px;
+      left: 0;
+    }
+
+    .heart::after {
+      left: -10px;
+      top: 0;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(0) rotate(45deg);
+        opacity: 0.8;
+      }
+      100% {
+        transform: translateY(110vh) rotate(45deg);
+        opacity: 0;
+      }
+    }
+
+    .container {
+      position: relative;
+      width: 320px;
+      height: 220px;
+      cursor: pointer;
+      transition: transform 1s ease;
+      z-index: 1;
+    }
+
+    .flap, .envelope {
+      transition: opacity 0.5s ease;
+    }
+
+    .flap {
+      position: absolute;
+      top: -100px;
+      left: 0;
+      width: 0;
+      height: 0;
+      border-left: 160px solid transparent;
+      border-right: 160px solid transparent;
+      border-bottom: 100px solid #ff69b4;
+      z-index: 3;
+    }
+
+    .envelope {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-color: #ffc0cb;
+      border: 2px solid #d63384;
+      border-radius: 10px;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-weight: bold;
+      font-size: 20px;
+      color: white;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    .letter {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      width: 100%;
+      background-color: white;
+      color: #333;
+      border: 2px solid #d63384;
+      border-radius: 10px;
+      padding: 20px;
+      box-sizing: border-box;
+      line-height: 1.6;
+      transition: top 1s ease, transform 1s ease, width 1s ease, height 1s ease, opacity 0.5s ease;
+      z-index: 1;
+      font-size: 16px;
+      visibility: hidden;
+      opacity: 0;
+    }
+
+    .show-letter {
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%) scale(1.5);
+      width: 400px;
+      height: auto;
+      visibility: visible;
+      opacity: 1;
+      z-index: 5;
+    }
+
+    .hide-envelope .flap,
+    .hide-envelope .envelope {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .heart-icon {
+      font-size: 30px;
+      color: red;
+      text-align: center;
+      animation: heart-pop 1s ease-out forwards;
+      opacity: 0;
+    }
+
+    @keyframes heart-pop {
+      0% {
+        transform: translateY(-30px) scale(0.5);
+        opacity: 0;
+      }
+      100% {
+        transform: translateY(0) scale(1.2);
+        opacity: 1;
+      }
+    }
+
+    /* Mobil için düzenlemeler */
+    @media (max-width: 600px) {
+      .container {
+        width: 90%; /* Mobilde daha geniş bir alan */
+        height: auto;
+      }
+      .letter {
+        width: 90%; /* Mobilde mektubun genişliği */
+        font-size: 14px; /* Yazı boyutunu mobilde küçült */
+      }
+    }
+  </style>
+</head>
+<body onclick="closeEnvelope(event)">
+
+  <!-- Hareketli kalpler -->
+  <script>
+    for (let i = 0; i < 30; i++) {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = `${Math.random() * 100}vw`;
+      heart.style.animationDelay = `${Math.random() * 5}s`;
+      document.body.appendChild(heart);
+    }
+  </script>
+
+  <div id="card" class="container" onclick="openEnvelope(event)">
+    <div class="flap"></div>
+    <div class="envelope">Anneme Mektup</div>
+
+    <div id="letter" class="letter" onclick="event.stopPropagation()">
+      <div class="heart-icon">❤️</div>
+      <h2>Sevgili Annem,</h2>
+      <p>
+        Bu mektubu sana olan sevgimi anlatmak için yazıyorum...  
+        Varlığınla hayatımda ışık oldun. Her zaman yanımda oldun, bana güç verdin.  
+        Senin gibi bir anneye sahip olduğum için çok şanslıyım.  
+        Anneler Günün kutlu olsun canım annem!  
+      </p>
+      <p style="text-align:right;">Seni çok seven kızın💖</p>
+    </div>
+  </div>
+
+  <script>
+    const card = document.getElementById("card");
+    const letter = document.getElementById("letter");
+
+    function openEnvelope(e) {
+      e.stopPropagation();
+      letter.classList.add("show-letter");
+      card.classList.add("hide-envelope");
+    }
+
+    function closeEnvelope(e) {
+      if (letter.classList.contains("show-letter")) {
+        letter.classList.remove("show-letter");
+        card.classList.remove("hide-envelope");
+      }
+    }
+  </script>
+
+</body>
+</html>
